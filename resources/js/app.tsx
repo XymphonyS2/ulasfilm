@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'ulas.film';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -13,10 +13,20 @@ createInertiaApp({
         switch (true) {
             case name === 'welcome':
                 return null;
+            case name === 'home':
+            case name === 'beranda':
+            case name === 'beranda-index':
+                return null;
+            case name.startsWith('film/'):
+                return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
                 return [AppLayout, SettingsLayout];
+            case name.startsWith('dashboard/'):
+                return null;
+            case name.startsWith('profile/'):
+                return null;
             default:
                 return AppLayout;
         }
@@ -26,7 +36,7 @@ createInertiaApp({
         return <TooltipProvider delayDuration={0}>{app}</TooltipProvider>;
     },
     progress: {
-        color: '#4B5563',
+        color: '#F5C518',
     },
 });
 

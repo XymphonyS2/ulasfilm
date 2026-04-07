@@ -7,14 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { login } from '@/routes';
-import { store } from '@/routes/register';
 
 export default function Register() {
     return (
         <>
-            <Head title="Register" />
+            <Head title="Daftar" />
             <Form
-                {...store.form()}
+                action="/register"
+                method="post"
                 resetOnSuccess={['password', 'password_confirmation']}
                 disableWhileProcessing
                 className="flex flex-col gap-6"
@@ -23,7 +23,7 @@ export default function Register() {
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name" className="text-[#B3B3B3]">Nama Lengkap</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -32,7 +32,8 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Full name"
+                                    placeholder="Nama lengkap Anda"
+                                    className="bg-[#1A1A1A] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                 />
                                 <InputError
                                     message={errors.name}
@@ -41,7 +42,7 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email" className="text-[#B3B3B3]">Alamat Email</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -49,27 +50,29 @@ export default function Register() {
                                     tabIndex={2}
                                     autoComplete="email"
                                     name="email"
-                                    placeholder="email@example.com"
+                                    placeholder="email@contoh.com"
+                                    className="bg-[#1A1A1A] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password" className="text-[#B3B3B3]">Kata Sandi</Label>
                                 <PasswordInput
                                     id="password"
                                     required
                                     tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder="Minimal 8 karakter"
+                                    className="bg-[#1A1A1A] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">
-                                    Confirm password
+                                <Label htmlFor="password_confirmation" className="text-[#B3B3B3]">
+                                    Konfirmasi Kata Sandi
                                 </Label>
                                 <PasswordInput
                                     id="password_confirmation"
@@ -77,7 +80,8 @@ export default function Register() {
                                     tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
-                                    placeholder="Confirm password"
+                                    placeholder="Ulangi kata sandi"
+                                    className="bg-[#1A1A1A] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                 />
                                 <InputError
                                     message={errors.password_confirmation}
@@ -86,19 +90,19 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full"
+                                className="mt-2 w-full bg-[#F5C518] text-[#0D0D0D] hover:bg-[#E5B500] font-semibold disabled:opacity-50"
                                 tabIndex={5}
-                                data-test="register-user-button"
+                                disabled={processing}
                             >
                                 {processing && <Spinner />}
-                                Create account
+                                Daftar
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
-                            Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
-                                Log in
+                        <div className="text-center text-sm text-[#B3B3B3]">
+                            Sudah punya akun?{' '}
+                            <TextLink href={login()} tabIndex={6} className="text-[#F5C518]">
+                                Masuk
                             </TextLink>
                         </div>
                     </>
@@ -109,6 +113,6 @@ export default function Register() {
 }
 
 Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
+    title: 'Buat Akun Baru',
+    description: 'Masukkan detail Anda di bawah untuk membuat akun',
 };

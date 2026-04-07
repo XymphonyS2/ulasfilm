@@ -10,22 +10,15 @@ class BerandaController extends Controller
 {
     public function index(Request $request)
     {
-
-        $totalFilms = 0;
-        $totalReviewers = User::count();
-        $totalRatings = 0;
-        $popularFilms = [];
-        $bestFilms = [];
-
         $component = $request->is('beranda') ? 'beranda-index' : 'beranda';
 
         return Inertia::render($component, [
-            'popularFilms' => $popularFilms,
-            'bestFilms' => $bestFilms,
+            'popularFilms' => [],
+            'bestFilms' => [],
             'stats' => [
-                'total_films' => $totalFilms,
-                'total_reviewers' => $totalReviewers,
-                'total_ratings' => $totalRatings,
+                'total_films' => 0,
+                'total_reviewers' => 0,
+                'total_ratings' => 0,
             ],
         ]);
     }

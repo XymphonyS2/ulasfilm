@@ -15,4 +15,37 @@ class FilmController extends Controller
             'filters' => [],
         ]);
     }
+
+    public function show(Request $request, int $id)
+    {
+        return Inertia::render('film/show', [
+            'film' => null,
+            'comments' => [],
+            'sort' => 'newest',
+            'genres' => [],
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        return redirect()->route('film.index');
+    }
+
+    public function edit(int $id)
+    {
+        return Inertia::render('film/edit', [
+                'film' => null,
+                'genres' => [],
+        ]);
+    }
+
+    public function update(Request $request, int $id)
+    {
+        return redirect()->route('film.show', $id);
+    }
+
+    public function destroy(int $id)
+    {
+        return redirect()->route('film.index');
+    }
 }

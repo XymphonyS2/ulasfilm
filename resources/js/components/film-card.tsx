@@ -18,29 +18,34 @@ export function FilmCard({ film }: { film: Film }) {
         ? `/storage/${film.poster}`
         : `https://placehold.co/300x450/1A1A1A/F5C518?text=${encodeURIComponent(film.judul)}&font=roboto`;
 
+    const totalViews = film.total_views ?? 0;
+
     return (
-        <div className="group relative rounded-xl overflow-hidden bg-[#1A1A1A] border border-[#2D2D2D] transition-all duration-300 hover:border-[#F5C518]/50 hover:shadow-[0_0_20px_rgba(245,197,24,0.15)]">
+        <div className="group relative rounded-xl overflow-hidden bg-[#1A1A1A] border border-[#2D2D2D] transition-all duration-300 hover:border-[#F5C518]/50 hover:shadow-[0_0_20px_rgba(245,197,24,0.15)] hover:-translate-y-1">
             {/* Poster */}
             <Link href={`/film/${film.id}`} className="block">
                 <div className="relative aspect-[2/3] overflow-hidden">
                     <img
                         src={posterUrl}
                         alt={film.judul}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
 
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+
                     {/* Hover Overlay with Sinopsis */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                        <p className="text-white text-xs leading-relaxed line-clamp-4">
-                            {film.sinopsis}
-                        </p>
-                        <div className="mt-2 flex items-center gap-1">
-                            <Eye className="size-3 text-[#F5C518]" />
-                            {film.weekly_views !== undefined ? (
-                                <span className="text-[#F5C518] text-xs">{film.weekly_views} tayangan/minggu</span>
-                            ) : film.total_views !== undefined ? (
-                                <span className="text-[#F5C518] text-xs">{film.total_views} total tayangan</span>
-                            ) : null}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4 translate-y-2 group-hover:translate-y-0">
+                        <div>
+                            <p className="text-white/90 text-xs leading-relaxed line-clamp-3">
+                                {film.sinopsis}
+                            </p>
+                            <div className="mt-1 flex items-center gap-1 text-[#F5C518]">
+                                <Eye className="size-3" />
+                                <span className="text-xs font-medium">
+                                    {totalViews > 0 ? `${totalViews.toLocaleString('id-ID')}x ditonton` : 'Belum ditonton'}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -61,7 +66,7 @@ export function FilmCard({ film }: { film: Film }) {
                     <span className="text-xs font-semibold text-white">
                         {film.average_rating ? film.average_rating.toFixed(1) : '-'}
                     </span>
-                    <span className="text-[#666666] text-xs">({film.reviewer_count} reviewer)</span>
+                    <span className="text-[#666666] text-xs">({film.reviewer_count})</span>
                 </div>
             </div>
         </div>

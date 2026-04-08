@@ -43,7 +43,6 @@ export default function FilmShow() {
     }>().props;
 
     const [film, setFilm] = useState(initialFilm);
-    const [comments, setComments] = useState(initialComments);
     const [commentText, setCommentText] = useState('');
     const [commentError, setCommentError] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -88,45 +87,16 @@ export default function FilmShow() {
             return;
         }
         setCommentError('');
-
-        // Optimistic: langsung tampilkan komentar baru
-        const tempId = Date.now();
-        const authUser = (usePage().props as any).auth?.user;
-        const optimisticComment = {
-            id: tempId,
-            content: commentText,
-            created_at: new Date().toISOString(),
-            user: { id: authUser?.id, name: authUser?.name },
-            likes_count: 0,
-            dislikes_count: 0,
-            user_reaction: null,
-            is_owner: true,
-            film_id: film.id,
-        };
-        const oldComments = [...comments];
-        setComments(prev => [optimisticComment, ...prev]);
-        const submittedText = commentText;
-        setCommentText('');
         setSubmitting(true);
 
-        router.post(`/film/${film.id}/comment`, { content: submittedText }, {
+        router.post(`/film/${film.id}/comment`, { content: commentText }, {
             preserveScroll: true,
             onSuccess: () => {
                 setSubmitting(false);
-                // Refresh dari server untuk dapat data真实
-                router.get(
-                    `/film/${film.id}`,
-                    { sort: sort },
-                    { only: ['comments'], preserveScroll: true, onSuccess: (props: any) => {
-                        if (props.comments) setComments(props.comments);
-                    }}
-                );
+                setCommentText('');
             },
             onError: (errors: any) => {
                 setSubmitting(false);
-                // Hapus komentar optimistik jika gagal
-                setComments(oldComments);
-                setCommentText(submittedText);
                 if (errors.content) setCommentError(errors.content);
             },
         });
@@ -212,7 +182,7 @@ export default function FilmShow() {
                             <div className="flex items-center gap-2">
                                 <MessageSquare className="size-5 text-[#F5C518]" />
                                 <h2 className="text-xl font-bold text-white">
-                                    Komentar ({comments.length})
+                                    Komentar ({initialComments.length})
                                 </h2>
                             </div>
 
@@ -267,9 +237,9 @@ export default function FilmShow() {
                         )}
 
                         {/* Comments List */}
-                        {comments.length > 0 ? (
+                        {initialComments.length > 0 ? (
                             <div className="space-y-3">
-                                {comments.map((comment) => (
+                                {initialComments.map((comment) => (
                                     <CommentItem key={comment.id} comment={comment} />
                                 ))}
                             </div>

@@ -1,4 +1,4 @@
-import { Head, usePage, useForm } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { Film, Plus, Trash2, Edit, X, Check } from 'lucide-react';
 import { useState } from 'react';
 import { Navbar } from '@/components/navbar';
@@ -34,7 +34,7 @@ type FilmData = {
 };
 
 export default function Dashboard() {
-    const { auth, films = [], stats = {}, genres = [] } = usePage<{
+    const { auth, films = [], stats, genres = [] } = usePage<{
         auth: { user: { name: string; role: string } | null };
         films: FilmData[];
         stats: { total_films: number; total_ratings: number; total_comments: number };
@@ -43,13 +43,14 @@ export default function Dashboard() {
 
     const [showAdd, setShowAdd] = useState(false);
     const [showDelete, setShowDelete] = useState<number | null>(null);
-
-    const { data: formData, setData, post, delete: destroyFilm, errors, processing, reset } = useForm({
+    const [formData, setFormData] = useState({
         poster: null as File | null,
         judul: '',
         genre: '',
         sinopsis: '',
     });
+    const [processing, setProcessing] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const handleAddFilm = (e: React.FormEvent) => {
         e.preventDefault();
@@ -59,23 +60,30 @@ export default function Dashboard() {
         form.append('genre', formData.genre);
         form.append('sinopsis', formData.sinopsis);
 
-        post('/film', form, {
+        setProcessing(true);
+        router.post('/film', form, {
             forceFormData: true,
             onSuccess: () => {
                 setShowAdd(false);
-                reset();
+                setFormData({ poster: null, judul: '', genre: '', sinopsis: '' });
+                setProcessing(false);
+            },
+            onError: (err) => {
+                setErrors(err as Record<string, string>);
+                setProcessing(false);
             },
         });
     };
 
     const handleDeleteFilm = (id: number) => {
-        destroyFilm(`/film/${id}`, {
+        router.delete(`/film/${id}`, {
             onSuccess: () => setShowDelete(null),
         });
     };
 
     const openAddDialog = () => {
-        reset();
+        setFormData({ poster: null, judul: '', genre: '', sinopsis: '' });
+        setErrors({});
         setShowAdd(true);
     };
 
@@ -108,9 +116,9 @@ export default function Dashboard() {
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-4 mb-8">
                         {[
-                            { label: 'Total Film', value: stats.total_films ?? 0 },
-                            { label: 'Total Rating', value: stats.total_ratings ?? 0 },
-                            { label: 'Total Komentar', value: stats.total_comments ?? 0 },
+                            { label: 'Total Film', value: stats?.total_films ?? 0 },
+                            { label: 'Total Rating', value: stats?.total_ratings ?? 0 },
+                            { label: 'Total Komentar', value: stats?.total_comments ?? 0 },
                         ].map(({ label, value }) => (
                             <div key={label} className="bg-[#1A1A1A] rounded-xl border border-[#2D2D2D] p-4 text-center">
                                 <div className="text-2xl font-bold text-[#F5C518]">{value}</div>
@@ -215,7 +223,7 @@ export default function Dashboard() {
                                     accept="image/*"
                                     onChange={(e) => {
                                         const file = e.target.files?.[0] ?? null;
-                                        setData('poster', file);
+                                        setFormData(prev => ({ ...prev, poster: file }));
                                     }}
                                     className="bg-[#242424] border-[#2D2D2D] text-white file:text-[#F5C518] file:border-0 cursor-pointer h-9"
                                 />
@@ -236,7 +244,7 @@ export default function Dashboard() {
                                 <Label className="text-[#B3B3B3] text-sm mb-2 block">Judul Film *</Label>
                                 <Input
                                     value={formData.judul}
-                                    onChange={(e) => setData('judul', e.target.value)}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, judul: e.target.value }))}
                                     placeholder="Contoh: Avengers: Endgame"
                                     className="bg-[#242424] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                     required
@@ -247,7 +255,7 @@ export default function Dashboard() {
                             {/* Genre */}
                             <div>
                                 <Label className="text-[#B3B3B3] text-sm mb-2 block">Genre *</Label>
-                                <Select value={formData.genre} onValueChange={(v) => setData('genre', v)}>
+                                <Select value={formData.genre} onValueChange={(v) => setFormData(prev => ({ ...prev, genre: v }))}>
                                     <SelectTrigger className="bg-[#242424] border-[#2D2D2D] text-white">
                                         <SelectValue placeholder="Pilih genre" />
                                     </SelectTrigger>
@@ -265,7 +273,7 @@ export default function Dashboard() {
                                 <Label className="text-[#B3B3B3] text-sm mb-2 block">Sinopsis *</Label>
                                 <Textarea
                                     value={formData.sinopsis}
-                                    onChange={(e) => setData('sinopsis', e.target.value)}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, sinopsis: e.target.value }))}
                                     placeholder="Tulis sinopsis film..."
                                     rows={4}
                                     className="bg-[#242424] border-[#2D2D2D] text-white placeholder:text-[#666666] resize-none"

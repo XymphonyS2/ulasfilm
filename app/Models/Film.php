@@ -18,26 +18,17 @@ class Film extends Model
     }
 
     public const GENRES = [
-        'Action',
-        'Adventure',
+        'Aksi',
         'Komedi',
         'Drama',
         'Horor',
-        'Thriller',
         'Romantis',
-        'Sci-Fi',
+        'Thriller',
         'Fantasi',
-        'Misteri',
-        'Kriminal',
+        'Fiksi Ilmiah',
+        'Petualangan',
         'Animasi',
         'Dokumenter',
-        'Keluarga',
-        'Musikal',
-        'Perang',
-        'Sejarah',
-        'Barat',
-        'Biografi',
-        'Olahraga',
     ];
 
     public function ratings(): HasMany

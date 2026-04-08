@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan:*)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(r['uri'], r['name'] or '', r['action'].split\\('@'\\)[-1]\\) for r in d]\")",
+      "Bash(npx tsc:*)",
+      "Bash(xargs wc:*)",
+      "Bash(npm run:*)",
+      "Bash(npx vite:*)"
+    ]
+  }
+}

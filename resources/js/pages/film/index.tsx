@@ -1,4 +1,4 @@
-import { Head, usePage, useSearchParams } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Film, Filter, Search, X } from 'lucide-react';
 import { useState } from 'react';
 import { Navbar } from '@/components/navbar';

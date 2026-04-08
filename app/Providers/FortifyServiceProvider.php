@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\LoginResponse;
+use Illuminate\Http\RedirectResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,20 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(LoginResponse::class, function () {
+            return new class implements LoginResponse {
+                public function toResponse($request): RedirectResponse
+                {
+                    $user = $request->user();
+
+                    if ($user->role === 'admin') {
+                        return redirect('/dashboard');
+                    }
+
+                    return redirect('/beranda');
+                }
+            };
+        });
     }
 
     /**

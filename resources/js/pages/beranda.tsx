@@ -5,7 +5,7 @@ import { FilmCard } from '@/components/film-card';
 import { Button } from '@/components/ui/button';
 
 export default function Beranda() {
-    const { auth, popularFilms = [], bestFilms = [], stats = {} } = usePage<{
+    const { auth, popularFilms = [], bestFilms = [], stats } = usePage<{
         auth: { user: { name: string; role: string } | null };
         popularFilms: Array<{
             id: number;
@@ -65,9 +65,9 @@ export default function Beranda() {
                         </div>
                         <div className="grid grid-cols-3 gap-4 mt-16 max-w-xl mx-auto">
                             {[
-                                { icon: Film, label: 'Film', value: stats.total_films?.toString() ?? '0' },
-                                { icon: Users, label: 'Reviewer', value: stats.total_reviewers?.toString() ?? '0' },
-                                { icon: Star, label: 'Rating', value: stats.total_ratings?.toString() ?? '0' },
+                                { icon: Film, label: 'Film', value: stats?.total_films?.toString() ?? '0' },
+                                { icon: Users, label: 'Reviewer', value: stats?.total_reviewers?.toString() ?? '0' },
+                                { icon: Star, label: 'Rating', value: stats?.total_ratings?.toString() ?? '0' },
                             ].map(({ icon: Icon, label, value }) => (
                                 <div key={label} className="text-center">
                                     <div className="inline-flex items-center justify-center size-10 rounded-full bg-[#1A1A1A] border border-[#2D2D2D] mb-2">

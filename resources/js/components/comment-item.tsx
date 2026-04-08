@@ -24,9 +24,12 @@ type Comment = {
 };
 
 function timeAgo(dateStr: string): string {
-    const date = new Date(dateStr);
+    // Parse ISO string dan konversi ke waktu lokal
+    const date = new Date(dateStr.replace(' ', 'T') + (dateStr.includes('+') || dateStr.includes('Z') ? '' : 'Z'));
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (isNaN(date.getTime())) return dateStr;
     if (diff < 60) return 'Baru saja';
     if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
@@ -80,11 +83,7 @@ export function CommentItem({ comment }: { comment: Comment }) {
             { _remove: isCurrentReaction ? 'true' : 'false' },
             {
                 preserveScroll: true,
-                onSuccess: () => {
-                    if (filmId) {
-                        router.get(`/film/${filmId}`, {}, { only: ['comments'], preserveScroll: true });
-                    }
-                },
+                onSuccess: () => {},
                 onError: () => {
                     setLocalLikes(comment.likes_count);
                     setLocalDislikes(comment.dislikes_count);
@@ -103,12 +102,8 @@ export function CommentItem({ comment }: { comment: Comment }) {
         setEditing(false);
 
         router.put(`/comment/${comment.id}`, { content: editContent }, {
-            onSuccess: () => {
-                // sinkronisasi dari server
-                if (filmId) {
-                    router.get(`/film/${filmId}`, {}, { only: ['comments'], preserveScroll: true });
-                }
-            },
+            preserveScroll: true,
+            onSuccess: () => {},
             onError: () => {
                 // revert jika gagal
                 setLocalContent(oldContent);
@@ -138,9 +133,7 @@ export function CommentItem({ comment }: { comment: Comment }) {
         router.delete(`/comment/${comment.id}`, {
             preserveScroll: true,
             onSuccess: () => {
-                if (filmId) {
-                    router.get(`/film/${filmId}`, {}, { only: ['comments'], preserveScroll: true });
-                }
+                window.location.reload();
             },
         });
     };

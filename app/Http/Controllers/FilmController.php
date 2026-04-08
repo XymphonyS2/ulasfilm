@@ -33,6 +33,11 @@ class FilmController extends Controller
         }
 
         $films = $query->get()->map(function ($film) {
+            $weeklyViews = $film->views()
+                ->where('viewed_at', '>=', now()->startOfWeek())
+                ->count();
+            $totalViews = $film->views()->count();
+
             return [
                 'id' => $film->id,
                 'poster' => $film->poster,
@@ -41,6 +46,8 @@ class FilmController extends Controller
                 'sinopsis' => $film->sinopsis,
                 'average_rating' => $film->average_rating,
                 'reviewer_count' => $film->reviewer_count,
+                'weekly_views' => $weeklyViews,
+                'total_views' => $totalViews,
             ];
         });
 
@@ -63,17 +70,13 @@ class FilmController extends Controller
             $q->with(['user', 'reactions']);
         }])->findOrFail($id);
 
-        // Record view only on first visit (not on subsequent Inertia/POST-back visits)
-        $viewKey = "film_viewed_{$film->id}_" . ($request->user() ? $request->user()->id : $request->ip());
-        if (!session()->has($viewKey)) {
-            FilmView::create([
-                'film_id' => $film->id,
-                'user_id' => Auth::id(),
-                'ip_address' => $request->ip(),
-                'viewed_at' => now(),
-            ]);
-            session()->put($viewKey, true);
-        }
+        // Record view every time user visits
+        FilmView::create([
+            'film_id' => $film->id,
+            'user_id' => Auth::id(),
+            'ip_address' => $request->ip(),
+            'viewed_at' => now(),
+        ]);
 
         $comments = $film->comments;
 
@@ -157,7 +160,7 @@ class FilmController extends Controller
             'sinopsis' => $validated['sinopsis'],
         ]);
 
-        return redirect()->route('film.index')->with('success', 'Film berhasil ditambahkan.');
+        return redirect()->route('dashboard')->with('success', 'Film berhasil ditambahkan.');
     }
 
     public function edit(int $id)
@@ -224,6 +227,6 @@ class FilmController extends Controller
 
         $film->delete();
 
-        return redirect()->route('film.index')->with('success', 'Film berhasil dihapus.');
+        return redirect()->route('dashboard')->with('success', 'Film berhasil dihapus.');
     }
 }

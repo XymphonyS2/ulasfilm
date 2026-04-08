@@ -16,7 +16,7 @@ import { login, logout, register, dashboard } from '@/routes';
 export function Navbar() {
     const { auth } = usePage().props;
     const [search, setSearch] = useState('');
-    const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const handleSearch = (value: string) => {
         setSearch(value);

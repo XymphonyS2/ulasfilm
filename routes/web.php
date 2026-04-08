@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentReactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\RatingController;
-use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BerandaController::class, 'index'])->name('home');
@@ -14,8 +14,7 @@ Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('role:admin');
-    Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
-    Route::patch('/profile', [UserProfileController::class, 'updateName'])->name('user.profile.update');
+    Route::redirect('/profile', '/settings/profile');
 });
 
 require __DIR__.'/settings.php';

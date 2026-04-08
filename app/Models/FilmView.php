@@ -13,6 +13,8 @@ class FilmView extends Model
         'viewed_at' => 'datetime',
     ];
 
+    public $timestamps = false;
+
     public function film(): BelongsTo
     {
         return $this->belongsTo(Film::class);

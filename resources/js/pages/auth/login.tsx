@@ -3,7 +3,6 @@ import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -24,7 +23,7 @@ export default function Login({
 }: Props) {
     return (
         <>
-            <Head title="Log in" />
+            <Head title="Masuk" />
 
             <Form
                 {...store.form()}
@@ -35,7 +34,7 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email" className="text-[#B3B3B3]">Alamat Email</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -44,21 +43,22 @@ export default function Login({
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="email@example.com"
+                                    placeholder="email@contoh.com"
+                                    className="bg-[#1A1A1A] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
                                 <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password" className="text-[#B3B3B3]">Kata Sandi</Label>
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="ml-auto text-sm"
+                                            className="ml-auto text-sm text-[#F5C518]"
                                             tabIndex={5}
                                         >
-                                            Forgot password?
+                                            Lupa kata sandi?
                                         </TextLink>
                                     )}
                                 </div>
@@ -68,37 +68,39 @@ export default function Login({
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder="Kata sandi Anda"
+                                    className="bg-[#1A1A1A] border-[#2D2D2D] text-white placeholder:text-[#666666]"
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
-                                <Checkbox
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="checkbox"
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
+                                    className="accent-[#F5C518]"
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember" className="text-[#B3B3B3] text-sm">Ingat saya</Label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                className="mt-2 w-full bg-[#F5C518] text-[#0D0D0D] hover:bg-[#E5B500] font-semibold disabled:opacity-50"
                                 tabIndex={4}
                                 disabled={processing}
-                                data-test="login-button"
                             >
                                 {processing && <Spinner />}
-                                Log in
+                                Masuk
                             </Button>
                         </div>
 
                         {canRegister && (
-                            <div className="text-center text-sm text-muted-foreground">
-                                Don't have an account?{' '}
-                                <TextLink href={register()} tabIndex={5}>
-                                    Sign up
+                            <div className="text-center text-sm text-[#B3B3B3]">
+                                Belum punya akun?{' '}
+                                <TextLink href={register()} tabIndex={5} className="text-[#F5C518]">
+                                    Daftar Sekarang
                                 </TextLink>
                             </div>
                         )}
@@ -107,7 +109,7 @@ export default function Login({
             </Form>
 
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <div className="mb-4 text-center text-sm font-medium text-[#4CAF50]">
                     {status}
                 </div>
             )}
@@ -116,6 +118,6 @@ export default function Login({
 }
 
 Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
+    title: 'Masuk ke Akun Anda',
+    description: 'Masukkan email dan kata sandi Anda untuk masuk',
 };

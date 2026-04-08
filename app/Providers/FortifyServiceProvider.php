@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\RegisterResponse;
 use Illuminate\Http\RedirectResponse;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -33,6 +34,20 @@ class FortifyServiceProvider extends ServiceProvider
                     }
 
                     return redirect('/beranda');
+                }
+            };
+        });
+
+        $this->app->singleton(RegisterResponse::class, function () {
+            return new class implements RegisterResponse {
+                public function toResponse($request): RedirectResponse
+                {
+                    // Logout user after registration - they must login manually
+                    auth()->logout();
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+
+                    return redirect('/login')->with('status', 'Pendaftaran berhasil! Silakan masuk dengan akun Anda.');
                 }
             };
         });

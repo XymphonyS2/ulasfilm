@@ -157,7 +157,7 @@ class FilmController extends Controller
             'sinopsis' => $validated['sinopsis'],
         ]);
 
-        return redirect()->route('film.index')->with('success', 'Film berhasil ditambahkan.');
+        return redirect()->route('dashboard')->with('success', 'Film berhasil ditambahkan.');
     }
 
     public function edit(int $id)
@@ -224,6 +224,6 @@ class FilmController extends Controller
 
         $film->delete();
 
-        return redirect()->route('film.index')->with('success', 'Film berhasil dihapus.');
+        return redirect()->route('dashboard')->with('success', 'Film berhasil dihapus.');
     }
 }
